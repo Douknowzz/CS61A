@@ -41,12 +41,24 @@ def roll_dice(num_rolls, dice=six_sided):
 def boar_brawl(player_score, opponent_score):
     """Return the points scored by rolling 0 dice according to Boar Brawl.
 
-    player_score:     The total score of the current player.
+    playerpython3 ok -q 01_score:     The total score of the current player.
     opponent_score:   The total score of the other player.
 
     """
     # BEGIN PROBLEM 2
-    "*** YOUR CODE HERE ***"
+    gewei = player_score % 10
+
+    if (opponent_score // 10) <= 0:
+        shiwei = 0
+    else:
+        shiwei = opponent_score // 10 % 10
+    diff = abs(gewei - shiwei)
+    
+    if diff > 0:
+        return diff * 3
+    else:
+        return 1
+
     # END PROBLEM 2
 
 
@@ -64,7 +76,10 @@ def take_turn(num_rolls, player_score, opponent_score, dice=six_sided):
     assert num_rolls >= 0, 'Cannot roll a negative number of dice in take_turn.'
     assert num_rolls <= 10, 'Cannot roll more than 10 dice.'
     # BEGIN PROBLEM 3
-    "*** YOUR CODE HERE ***"
+    if num_rolls != 0:
+        return roll_dice(num_rolls, dice)
+    else:
+        return boar_brawl(player_score, opponent_score)
     # END PROBLEM 3
 
 
@@ -89,13 +104,25 @@ def is_prime(n):
 def num_factors(n):
     """Return the number of factors of N, including 1 and N itself."""
     # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
+    k = 1
+    count = 0
+    while k <= n:
+        if n % k == 0:
+            count += 1
+        k += 1
+    return count
     # END PROBLEM 4
 
 def sus_points(score):
     """Return the new score of a player taking into account the Sus Fuss rule."""
     # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
+    if num_factors(score) != 4 and num_factors(score) != 3:
+        return score
+    
+    score += 1
+    while not(is_prime(score)):
+        score += 1
+    return score
     # END PROBLEM 4
 
 def sus_update(num_rolls, player_score, opponent_score, dice=six_sided):
@@ -103,7 +130,9 @@ def sus_update(num_rolls, player_score, opponent_score, dice=six_sided):
     PLAYER_SCORE and then rolls NUM_ROLLS DICE, *including* Sus Fuss.
     """
     # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
+    score = simple_update(num_rolls, player_score, opponent_score, dice)
+    score = sus_points(score)
+    return score
     # END PROBLEM 4
 
 
@@ -142,7 +171,17 @@ def play(strategy0, strategy1, update,
     """
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
-    "*** YOUR CODE HERE ***"
+    # 返回游戏结束时玩家1和0的分数
+    # 根据who判断这轮是谁扔，达到目标分数介绍
+    while score0 < goal and score1 < goal:
+        if who == 0:
+            strategy = strategy0(score0, score1)
+            score0 = update(strategy, score0, score1, dice)
+            who = 1 - who
+        elif who == 1:
+            strategy = strategy1(score1, score0)
+            score1 = update(strategy, score1, score0, dice)
+            who = 1 - who
     # END PROBLEM 5
     return score0, score1
 
