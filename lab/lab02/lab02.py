@@ -14,6 +14,8 @@ def composite_identity(f, g):
     False
     """
 
+    '''
+    # mine solution
     def h(x):
         a = f(g(x))
         b = g(f(x))
@@ -22,6 +24,15 @@ def composite_identity(f, g):
         else:
             return False
     return h
+    '''
+    # cs61a's solution
+    return lambda x: f(g(x)) == g(f(x))
+    '''
+    # alternate solution:
+    def h(x):
+        return f(g(x)) == g(f(x))
+    return h
+    '''
 
 def sum_digits(y):
     """Return the sum of the digits of non-negative integer y."""
@@ -66,6 +77,7 @@ def count_cond(condition):
     >>> count_primes(20)   # 2, 3, 5, 7, 11, 13, 17, 19
     8
     """
+    # same to cs61a's solution
     def f(n):
         count = 0
         i = 1
@@ -84,6 +96,8 @@ def multiple(a, b):
     >>> multiple(14, 21)
     42
     """
+    '''
+    # mine solution
     m ,n = a, b
     if a < b:
         temp = b
@@ -94,6 +108,13 @@ def multiple(a, b):
         a = b
         b = temp
     return m * n // a
+    '''
+    # cs61a's solution
+    n = 1
+    while True:
+        if n % a == 0 and n % b == 0:
+            return n
+        n += 1
 
 
 def cycle(f1, f2, f3):
@@ -124,6 +145,9 @@ def cycle(f1, f2, f3):
     """
     def g(n):
         def h(x):
+            '''
+            # mine solution
+            # 思想是一样的，但是我的代码写的太麻烦了
             result = x
             b = n
             if b >= 3:
@@ -145,5 +169,27 @@ def cycle(f1, f2, f3):
                 else:
                     count = b
             return result
+            '''
+            # cs61a's solution
+            i = 0
+            while i < n:
+                if i % 3 == 0:
+                    x = f1(x)
+                elif i % 3 == 1:
+                    x = f2(x)
+                else:
+                    x = f3(x)
+                i += 1
+            return x
         return h
     return g
+    '''
+    # alternative recursive solution
+    def g(n):
+        def h(x):
+            if n == 0:
+                return x
+            return cycle(f2, f3, f1)(n - 1)(f1(x))
+        return h
+    return g
+    '''
